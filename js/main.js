@@ -1,4 +1,4 @@
-
+let todosLosNumeros = [];
 
 function calcular() {
     let continuar;
@@ -6,59 +6,67 @@ function calcular() {
 
     do {
         let operador;
-        let numero1;
-        let numero2;
+        let numeros = [];
 
         if (resultadoAnterior === undefined) {
             operador = prompt("Ingrese el operador (+, -, *, /):");
-            numero1 = parseFloat(prompt("Ingrese el primer número:"));
-            numero2 = parseFloat(prompt("Ingrese el segundo número:"));
+            numeros.push(parseFloat(prompt("Ingrese el primer número:")));
+            numeros.push(parseFloat(prompt("Ingrese el segundo número:")));
 
-            if (isNaN(numero1) || isNaN(numero2)) {
+            if (numeros.some(isNaN)) {
                 alert("Error: Ingresar únicamente números.");
                 return;
             }
         }
         else {
             operador = prompt("Ingrese el operador (+, -, *, /):");
-            numero1 = resultadoAnterior;
-            numero2 = parseFloat(prompt("Ingrese el número adicional:"));
+            numeros.push(resultadoAnterior);
+            numeros.push(parseFloat(prompt("Ingrese el número adicional:")));
 
-            if (isNaN(numero2)) {
+            if (isNaN(numeros[numeros.length - 1])) {
                 alert("Error: Ingresar únicamente números.");
                 return;
             }
-            if (operador !== '+' && operador !== '-' && operador !== '*' && operador !== '/') {
+            if (!['+', '-', '*', '/'].includes(operador)) {
                 alert("Error: Operador no válido. Reiniciando desde cero.");
                 resultadoAnterior = undefined;
                 continue;
             }
         }
 
-        function operacion(operador, num1, num2) {
-            if (operador === '+') {
-                return num1 + num2;
-            }
-            else if (operador === '-') {
-                return num1 - num2;
-            }
-            else if (operador === '*') {
-                return num1 * num2;
-            }
-            else if (operador === '/') {
-                if (num2 !== 0) {
-                    return num1 / num2;
-                } else {
-                    return 'Error: División por cero';
-                }
-            }
-            else {
-                return 'Error: Operador no válido';
-            }
+        for (let i = 0; i < numeros.length; i++) {
+            todosLosNumeros.push(numeros[i]);
         }
 
-        let resultado = operacion(operador, numero1, numero2);
-        alert("El resultado es: " + resultado);
+        function operacion(operador, numeros) {
+            let resultado;
+
+            switch (operador) {
+                case '+':
+                    resultado = numeros.reduce((a, b) => a + b, 0);
+                    break;
+                case '-':
+                    resultado = numeros.reduce((a, b) => a - b);
+                    break;
+                case '*':
+                    resultado = numeros.reduce((a, b) => a * b, 1);
+                    break;
+                case '/':
+                    resultado = numeros.reduce((a, b) => a / b);
+                    break;
+                default:
+                    resultado = 'Error: Operador no válido';
+                    break;
+            }
+
+            return resultado;
+        }
+
+        let resultado = operacion(operador, numeros);
+        let maximoGlobal = Math.max(...todosLosNumeros);
+        let minimoGlobal = Math.min(...todosLosNumeros);
+        let numeroAleatorio = Math.floor(Math.random() * (maximoGlobal - minimoGlobal + 1)) + minimoGlobal;
+        alert("El resultado es: " + resultado + "\nEl número más alto utilizado es: " + maximoGlobal + "\nEl número más bajo utilizado es: " + minimoGlobal + "\nEl número aleatorio entre el máximo y el mínimo es: " + numeroAleatorio);
 
         continuar = confirm("¿Desea continuar operando sobre el resultado anterior?");
 
@@ -67,6 +75,4 @@ function calcular() {
     } while (continuar);
 }
 
-
-
-
+calcular();
